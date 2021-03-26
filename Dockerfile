@@ -1,5 +1,5 @@
 # We're using Ubuntu 20.10
-FROM kenzo404/docker:groovy
+FROM kenzo404/docker:latest
 
 #
 # Clone repo and prepare working directory
