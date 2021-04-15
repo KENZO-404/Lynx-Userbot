@@ -1,8 +1,8 @@
 # Docker Tag Images, Using Python Slim Buster.
 FROM kenzo404/lynxuser:Buster
-# ===========================================
-#               Lynx - Userbot
-# ===========================================
+# =========================================
+#              Lynx - Userbot
+# =========================================
 RUN git clone -b KENZO-404-Lynx-Deploy https://github.com/KENZO-404/Lynx-Userbot /root/userbot
 RUN mkdir /root/userbot/.bin
 RUN pip install --upgrade pip setuptools
