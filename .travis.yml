@@ -1,0 +1,13 @@
+language: python
+jobs:
+  include:
+  - name: "3.9.4 Python Version"
+   python:
+  - "3.9.4"
+# command to install dependencies
+install:
+  - pip install -r requirements.txt
+script:
+  - python -m userbot
+jobs:
+  fast_finish: true
