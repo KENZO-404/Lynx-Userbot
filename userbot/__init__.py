@@ -357,7 +357,7 @@ with bot:
 
 
 async def check_alive():
-    await bot.send_message(BOTLOG_CHATID, "``` ⚡𝗟𝘆𝗻𝘅-𝙐𝙎𝙀𝙍𝘽𝙊𝙏⚡Alpha Has been active...```")
+    await bot.send_message(BOTLOG_CHATID, "``` ⚡𝗟𝘆𝗻𝘅-𝙐𝙎𝙀𝙍𝘽𝙊𝙏⚡ <Alpha> Has been active...```")
     return
 
 with bot:
