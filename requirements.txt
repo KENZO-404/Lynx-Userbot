@@ -5,6 +5,7 @@ aria2p
 async_generator
 beautifulsoup4>=4.9.3
 cowpy>=1.1.0
+ci-rvm>=0.9.0b1
 psutil
 wget
 telegraph
