@@ -8,7 +8,7 @@ import redis
 import asyncio
 
 from telethon import events
-from userbot import ALIVE_NAME, bot
+from userbot import CMD_HELP, ALIVE_NAME, bot
 from userbot.events import register
 from platform import uname
 
