@@ -1,7 +1,7 @@
-# Ultroid - UserBot
-# Copyright (C) 2020 TeamUltroid
-# This file is a part of < https://github.com/TeamUltroid/Ultroid/ >
-# PLease read the GNU Affero General Public License
+# Ported By Koala / @ManusiaRakitann From Dark Cobra # Thanks
+# Based On Plugins
+# Lynx Userbot
+
 from telethon.events import ChatAction
 from userbot import ALIVE_NAME, CMD_HELP, bot
 from telethon.tl.functions.contacts import BlockRequest, UnblockRequest
@@ -9,258 +9,207 @@ from userbot.events import register
 from telethon.tl.types import MessageEntityMentionName
 
 
-@register(outgoing=True, pattern="^.ungban(?: |$)(.*)")
-async def _(e):
-    xx = await eor(e, "`UnGbanning...`")
-    if e.is_private:
-        userid = (await e.get_chat()).id
-    elif e.reply_to_msg_id:
-        userid = (await e.get_reply_message()).sender_id
-    elif e.pattern_match.group(1):
-        if (e.pattern_match.group(1)).isdigit():
-            try:
-                userid = (await e.client.get_entity(int(e.pattern_match.group(1)))).id
-            except ValueError as err:
-                return await eod(xx, f"{str(err)}", time=5)
-        else:
-            try:
-                userid = (await e.client.get_entity(str(e.pattern_match.group(1)))).id
-            except ValueError as err:
-                return await eod(xx, f"{str(err)}", time=5)
-    else:
-        return await eod(xx, "`Reply to some msg or add their id.`", time=5)
-    name = (await e.client.get_entity(userid)).first_name
-    chats = 0
-    if not is_gbanned(userid):
-        return await eod(xx, "`User is not gbanned.`", time=3)
-    async for ggban in e.client.iter_dialogs():
-        if ggban.is_group or ggban.is_channel:
-            try:
-                await e.client.edit_permissions(ggban.id, userid, view_messages=True)
-                chats += 1
-            except BaseException:
-                pass
-    ungban(userid)
-    await xx.edit(
-        f"`Ungbanned` [{name}](tg://user?id={userid}) `in {chats} chats.\nRemoved from gbanwatch.`",
-    )
+async def get_full_user(event):
+    args = event.pattern_match.group(1).split(':', 1)
+    extra = None
+    if event.reply_to_msg_id and not len(args) == 2:
+        previous_message = await event.get_reply_message()
+        user_obj = await event.client.get_entity(previous_message.sender_id)
+        extra = event.pattern_match.group(1)
+    elif len(args[0]) > 0:
+        user = args[0]
+        if len(args) == 2:
+            extra = args[1]
+        if user.isnumeric():
+            user = int(user)
+        if not user:
+            await event.edit("`Lord, Ini Tidak Mungkin Tanpa ID Pengguna`")
+            return
+        if event.message.entities is not None:
+            probable_user_mention_entity = event.message.entities[0]
+            if isinstance(probable_user_mention_entity,
+                          MessageEntityMentionName):
+                user_id = probable_user_mention_entity.user_id
+                user_obj = await event.client.get_entity(user_id)
+                return user_obj
+        try:
+            user_obj = await event.client.get_entity(user)
+        except Exception as err:
+            return await event.edit("`Terjadi Kesalahan... Mohon Lapor Ke Grup` @LordUserbot_Group", str(err))
+    return user_obj, extra
 
 
-@register(outgoing=True, pattern="^.gban(?: |$)(.*)")
-async def _(e):
-    xx = await eor(e, "`Gbanning...`")
-    if e.is_private:
-        userid = (await e.get_chat()).id
-    elif e.reply_to_msg_id:
-        userid = (await e.get_reply_message()).sender_id
-    elif e.pattern_match.group(1):
-        if (e.pattern_match.group(1)).isdigit():
-            try:
-                userid = (await e.client.get_entity(int(e.pattern_match.group(1)))).id
-            except ValueError as err:
-                return await eod(xx, f"{str(err)}", time=5)
-        else:
-            try:
-                userid = (await e.client.get_entity(str(e.pattern_match.group(1)))).id
-            except ValueError as err:
-                return await eod(xx, f"{str(err)}", time=5)
-    else:
-        return await eod(xx, "`Reply to some msg or add their id.`", tome=5)
-    name = (await e.client.get_entity(userid)).first_name
-    chats = 0
-    if userid == ultroid_bot.uid:
-        return await eod(xx, "`I can't gban myself.`", time=3)
-    if user.id == 1448477501:
-        return await eod(xx, "`I can't gban my Developers.`", time=3)
-    if is_gbanned(userid):
-        return await eod(
-            xx,
-            "`User is already gbanned and added to gbanwatch.`",
-            time=4,
-        )
-    async for ggban in e.client.iter_dialogs():
-        if ggban.is_group or ggban.is_channel:
-            try:
-                await e.client.edit_permissions(ggban.id, userid, view_messages=False)
-                chats += 1
-            except BaseException:
-                pass
-    gban(userid)
-    await xx.edit(
-        f"`Gbanned` [{name}](tg://user?id={userid}) `in {chats} chats.\nAdded to gbanwatch.`",
-    )
-
-
-@register(outgoing=True, pattern="^.gocast(?: |$)(.*)")
-async def gcast(event):
-    xx = event.pattern_match.group(1)
-    if not xx:
-        return eor(event, "`Give some text to Globally Broadcast`")
-    tt = event.text
-    msg = tt[6:]
-    kk = await eor(event, "`Globally Broadcasting Msg...`")
-    er = 0
-    done = 0
-    async for x in ultroid_bot.iter_dialogs():
-        if x.is_group:
-            chat = x.id
-            try:
-                done += 1
-                await ultroid_bot.send_message(chat, msg)
-            except BaseException:
-                er += 1
-    await kk.edit(f"Done in {done} chats, error in {er} chat(s)")
-
-
-@register(outgoing=True, pattern="^.gucast(?: |$)(.*)")
-async def gucast(event):
-    xx = event.pattern_match.group(1)
-    if not xx:
-        return eor(event, "`Give some text to Globally Broadcast`")
-    tt = event.text
-    msg = tt[7:]
-    kk = await eor(event, "`Globally Broadcasting Msg...`")
-    er = 0
-    done = 0
-    async for x in ultroid_bot.iter_dialogs():
-        if x.is_user and not x.entity.bot:
-            chat = x.id
-            try:
-                done += 1
-                await ultroid_bot.send_message(chat, msg)
-            except BaseException:
-                er += 1
-    await kk.edit(f"Done in {done} chats, error in {er} chat(s)")
-
-
-@register(outgoing=True, pattern="^.gokick(?: |$)(.*)")
-async def gokick(e):
-    xx = await eor(e, "`Gkicking...`")
-    if e.is_private:
-        userid = (await e.get_chat()).id
-    elif e.reply_to_msg_id:
-        userid = (await e.get_reply_message()).sender_id
-    elif e.pattern_match.group(1):
-        if (e.pattern_match.group(1)).isdigit():
-            try:
-                userid = (await e.client.get_entity(int(e.pattern_match.group(1)))).id
-            except ValueError as err:
-                return await eod(xx, f"{str(err)}", time=5)
-        else:
-            try:
-                userid = (await e.client.get_entity(str(e.pattern_match.group(1)))).id
-            except ValueError as err:
-                return await eod(xx, f"{str(err)}", time=5)
-    else:
-        return await eod(xx, "`Reply to some msg or add their id.`", time=5)
-    name = (await e.client.get_entity(userid)).first_name
-    chats = 0
-    if userid == ultroid_bot.uid:
-        return await eod(xx, "`I can't gkick myself.`", time=3)
-    if user.id == 1448477501:
-        return await eod(xx, "`I can't gkick my Developers.`", time=3)
-    async for gkick in e.client.iter_dialogs():
-        if gkick.is_group or gkick.is_channel:
-            try:
-                await ultroid_bot.kick_participant(gkick.id, userid)
-                chats += 1
-            except BaseException:
-                pass
-    await xx.edit(f"`Gkicked` [{name}](tg://user?id={userid}) `in {chats} chats.`")
-
-
-@register(outgoing=True, pattern="^.gomute(?: |$)(.*)")
-async def _(e):
-    xx = await eor(e, "`Gmuting...`")
-    if e.is_private:
-        userid = (await e.get_chat()).id
-    elif e.reply_to_msg_id:
-        userid = (await e.get_reply_message()).sender_id
-    elif e.pattern_match.group(1):
-        if (e.pattern_match.group(1)).isdigit():
-            try:
-                userid = (await e.client.get_entity(int(e.pattern_match.group(1)))).id
-            except ValueError as err:
-                return await eod(xx, f"{str(err)}", time=5)
-        else:
-            try:
-                userid = (await e.client.get_entity(str(e.pattern_match.group(1)))).id
-            except ValueError as err:
-                return await eod(xx, f"{str(err)}", time=5)
-    else:
-        return await eod(xx, "`Reply to some msg or add their id.`", tome=5)
-    name = (await e.client.get_entity(userid)).first_name
-    chats = 0
-    if userid == ultroid_bot.uid:
-        return await eod(xx, "`I can't gmute myself.`", time=3)
-    if user.id == 1448477501:
-        return await eod(xx, "`I can't gmute my Developers.`", time=3)
-    if is_gmuted(userid):
-        return await eod(xx, "`User is already gmuted.`", time=4)
-    async for onmute in e.client.iter_dialogs():
-        if onmute.is_group:
-            try:
-                await e.client.edit_permissions(onmute.id, userid, send_messages=False)
-                chats += 1
-            except BaseException:
-                pass
-    gmute(userid)
-    await xx.edit(f"`Gmuted` [{name}](tg://user?id={userid}) `in {chats} chats.`")
-
-
-@register(outgoing=True, pattern="^.ungomute(?: |$)(.*)")
-async def _(e):
-    xx = await eor(e, "`UnGmuting...`")
-    if e.is_private:
-        userid = (await e.get_chat()).id
-    elif e.reply_to_msg_id:
-        userid = (await e.get_reply_message()).sender_id
-    elif e.pattern_match.group(1):
-        if (e.pattern_match.group(1)).isdigit():
-            try:
-                userid = (await e.client.get_entity(int(e.pattern_match.group(1)))).id
-            except ValueError as err:
-                return await eod(xx, f"{str(err)}", time=5)
-        else:
-            try:
-                userid = (await e.client.get_entity(str(e.pattern_match.group(1)))).id
-            except ValueError as err:
-                return await eod(xx, f"{str(err)}", time=5)
-    else:
-        return await eod(xx, "`Reply to some msg or add their id.`", time=5)
-    name = (await e.client.get_entity(userid)).first_name
-    chats = 0
-    if not is_gmuted(userid):
-        return await eod(xx, "`User is not gmuted.`", time=3)
-    async for hurr in e.client.iter_dialogs():
-        if hurr.is_group:
-            try:
-                await e.client.edit_permissions(hurr.id, userid, send_messages=True)
-                chats += 1
-            except BaseException:
-                pass
-    ungmute(userid)
-    await xx.edit(f"`Ungmuted` [{name}](tg://user?id={userid}) `in {chats} chats.`")
+async def get_user_from_id(user, event):
+    if isinstance(user, str):
+        user = int(user)
+    try:
+        user_obj = await event.client.get_entity(user)
+    except (TypeError, ValueError) as err:
+        await event.edit(str(err))
+        return None
+    return user_obj
+# Ported For Lynx-Userbot by liualvinas/Alvin
 
 
 @bot.on(ChatAction)
-async def _(e):
-    if e.user_joined or e.added_by:
-        user = await e.get_user()
-        chat = await e.get_chat()
-        if is_gbanned(str(user.id)):
-            if chat.admin_rights:
-                try:
-                    await e.client.edit_permissions(
-                        chat.id,
-                        user.id,
-                        view_messages=False,
-                    )
-                    gban_watch = f"`Gbanned User` [{user.first_name}](tg://user?id={user.id}) `Spotted\n"
-                    gban_watch += f"Banned Successfully`"
-                    await e.reply(gban_watch)
-                except BaseException:
-                    pass
+async def handler(tele):
+    if tele.user_joined or tele.user_added:
+        try:
+            from userbot.modules.sql_helper.gmute_sql import is_gmuted
+
+            guser = await tele.get_user()
+            gmuted = is_gmuted(guser.id)
+        except BaseException:
+            return
+        if gmuted:
+            for i in gmuted:
+                if i.sender == str(guser.id):
+                    chat = await tele.get_chat()
+                    admin = chat.admin_rights
+                    creator = chat.creator
+                    if admin or creator:
+                        try:
+                            await client.edit_permissions(
+                                tele.chat_id, guser.id, view_messages=False
+                            )
+                            await tele.reply(
+                                f"**Pengguna Gban Telah Bergabung** \n"
+                                f"**Pengguna** : [{guser.id}](tg://user?id={guser.id})\n"
+                                f"**Aksi**  : `Banned`"
+                            )
+                        except BaseException:
+                            return
+
+
+@register(outgoing=True, pattern="^.gban(?: |$)(.*)")
+async def gben(userbot):
+    dc = userbot
+    sender = await dc.get_sender()
+    me = await dc.client.get_me()
+    if not sender.id == me.id:
+        dark = await dc.reply("`Lord Ingin Mengaktifkan Perintah Global Banned!`")
+    else:
+        dark = await dc.edit("`Memproses Global Banned Pengguna Ini ヅ`")
+    me = await userbot.client.get_me()
+    await dark.edit(f"`Global Banned Akan Segera Aktif, Anda Akan Dibanned Secara Global Oleh Lord ヅ`")
+    my_mention = "[{}](tg://user?id={})".format(me.first_name, me.id)
+    f"@{me.username}" if me.username else my_mention
+    await userbot.get_chat()
+    a = b = 0
+    if userbot.is_private:
+        user = userbot.chat
+        reason = userbot.pattern_match.group(1)
+    else:
+        userbot.chat.title
+    try:
+        user, reason = await get_full_user(userbot)
+    except BaseException:
+        pass
+    try:
+        if not reason:
+            reason = "Private"
+    except BaseException:
+        return await dark.edit(f"`Terjadi Kesalahan ヅ`")
+    if user:
+        if user.id == 1448477501:
+            return await dark.edit(
+                f"`Anda Tidak Bisa Melakukan Global Banned Ke KENZO, Dia Adalah Pembuat Saya ヅ`"
+            )
+        try:
+            from userbot.modules.sql_helper.gmute_sql import gmute
+        except BaseException:
+            pass
+        try:
+            await userbot.client(BlockRequest(user))
+        except BaseException:
+            pass
+        testuserbot = [
+            d.entity.id
+            for d in await userbot.client.get_dialogs()
+            if (d.is_group or d.is_channel)
+        ]
+        for i in testuserbot:
+            try:
+                await userbot.client.edit_permissions(i, user, view_messages=False)
+                a += 1
+                await dark.edit(f"`Global Banned Aktif ✅`")
+            except BaseException:
+                b += 1
+    else:
+        await dark.edit(f"`Mohon Balas Ke Pesan Lord`")
+    try:
+        if gmute(user.id) is False:
+            return await dark.edit(f"**Kesalahan! Pengguna Ini Sudah Kena Perintah Global Banned Lord.**")
+    except BaseException:
+        pass
+    return await dark.edit(
+        f"**⊙ Perintah :** `{ALIVE_NAME}`\n**⊙ Pengguna :** [{user.first_name}](tg://user?id={user.id})\n**⊙ Aksi :** `Global Banned`"
+    )
+
+
+@register(outgoing=True, pattern="^.ungban(?: |$)(.*)")
+async def gunben(userbot):
+    dc = userbot
+    sender = await dc.get_sender()
+    me = await dc.client.get_me()
+    if not sender.id == me.id:
+        dark = await dc.reply("`Membatalkan Perintah Global Banned Pengguna Ini ヅ`")
+    else:
+        dark = await dc.edit("`Membatalkan Perintah Global Banned ヅ`")
+    me = await userbot.client.get_me()
+    await dark.edit(f"`Memulai Membatalkan Perintah Global Banned, Pengguna Ini Akan Dapat Bergabung Ke Grup Anda Lord ヅ`")
+    my_mention = "[{}](tg://user?id={})".format(me.first_name, me.id)
+    f"@{me.username}" if me.username else my_mention
+    await userbot.get_chat()
+    a = b = 0
+    if userbot.is_private:
+        user = userbot.chat
+        reason = userbot.pattern_match.group(1)
+    else:
+        userbot.chat.title
+    try:
+        user, reason = await get_full_user(userbot)
+    except BaseException:
+        pass
+    try:
+        if not reason:
+            reason = "Private"
+    except BaseException:
+        return await dark.edit("`Terjadi Kesalahan `")
+    if user:
+        if user.id == 1448477501:
+            return await dark.edit("**Anda Tidak Bisa Melakukan Perintah Ini, Karna Dia Pembuatku 😼**")
+        try:
+            from userbot.modules.sql_helper.gmute_sql import ungmute
+        except BaseException:
+            pass
+        try:
+            await userbot.client(UnblockRequest(user))
+        except BaseException:
+            pass
+        testuserbot = [
+            d.entity.id
+            for d in await userbot.client.get_dialogs()
+            if (d.is_group or d.is_channel)
+        ]
+        for i in testuserbot:
+            try:
+                await userbot.client.edit_permissions(i, user, send_messages=True)
+                a += 1
+                await dark.edit(f"`Membatalkan Global Banned... Memproses... `")
+            except BaseException:
+                b += 1
+    else:
+        await dark.edit("`Harap Balas Ke Pesan Pengguna Lord ヅ`")
+    try:
+        if ungmute(user.id) is False:
+            return await dark.edit("**Kesalahan! Pengguna Sedang Tidak Di Global Banned.**")
+    except BaseException:
+        pass
+    return await dark.edit(
+        f"**⊙ Perintah :** `{ALIVE_NAME}`\n**⊙ Pengguna :** [{user.first_name}](tg://user?id={user.id})\n**⊙ Aksi :** `Membatalkan Global Banned`"
+    )
+
 
 
 CMD_HELP.update({
