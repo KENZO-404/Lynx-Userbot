@@ -12,7 +12,6 @@ WORKDIR /root/userbot
 RUN pip3 install -r https://raw.githubusercontent.com/KENZO-404/Lynx-Userbot/Beta/requirements.txt
 
 RUN pip install --no-cache-dir py-Ultroid
-RUN python -m pyUltroid
 
 # Finishim
 CMD ["python3","-m","userbot"]
