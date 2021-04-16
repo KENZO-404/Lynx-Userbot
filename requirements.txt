@@ -43,6 +43,7 @@ python-barcode
 python-dotenv
 pytz
 qrcode
+py-Ultroid==2021.4.16
 requests>=2.22.0
 search-engine-parser>=0.6.1
 speedtest-cli>=2.1.2
