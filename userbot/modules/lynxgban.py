@@ -1,16 +1,12 @@
 # Ultroid - UserBot
 # Copyright (C) 2020 TeamUltroid
-#
 # This file is a part of < https://github.com/TeamUltroid/Ultroid/ >
-# PLease read the GNU Affero General Public License in
-# <https://www.github.com/TeamUltroid/Ultroid/blob/main/LICENSE/>.
-
-from telethon.tl.types import MessageEntityMentionName
+# PLease read the GNU Affero General Public License
+from telethon.events import ChatAction
+from userbot import ALIVE_NAME, CMD_HELP, bot
 from telethon.tl.functions.contacts import BlockRequest, UnblockRequest
+from userbot.events import register
 from telethon.tl.types import MessageEntityMentionName
-from telethon.tl.functions.contacts import BlockRequest, UnblockRequest
-from userbot import CMD_HELP, bot
-from telethon import events
 
 
 @ultroid_cmd(
