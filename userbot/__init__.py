@@ -112,6 +112,9 @@ UPSTREAM_REPO_URL = os.environ.get(
     "https://github.com/KENZO-404/Lynx-Userbot")
 UPSTREAM_REPO_BRANCH = os.environ.get(
     "UPSTREAM_REPO_BRANCH", "Beta")
+UPSTREAM_REMOTE = os.environ.get(
+    "UPSTREAM_REMOTE", "Lynx-Userbot")
+
 
 # Console verbose logging
 CONSOLE_LOGGER_VERBOSE = sb(os.environ.get("CONSOLE_LOGGER_VERBOSE", "False"))
