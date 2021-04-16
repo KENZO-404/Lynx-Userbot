@@ -9,9 +9,7 @@ from userbot.events import register
 from telethon.tl.types import MessageEntityMentionName
 
 
-@ultroid_cmd(
-    pattern="ungban ?(.*)",
-)
+@register(outgoing=True, pattern="^.ungban(?: |$)(.*)")
 async def _(e):
     xx = await eor(e, "`UnGbanning...`")
     if e.is_private:
@@ -48,9 +46,7 @@ async def _(e):
     )
 
 
-@ultroid_cmd(
-    pattern="gban ?(.*)",
-)
+@register(outgoing=True, pattern="^.gban(?: |$)(.*)")
 async def _(e):
     xx = await eor(e, "`Gbanning...`")
     if e.is_private:
@@ -95,9 +91,7 @@ async def _(e):
     )
 
 
-@ultroid_cmd(
-    pattern="gocast ?(.*)",
-)
+@register(outgoing=True, pattern="^.gocast(?: |$)(.*)")
 async def gcast(event):
     xx = event.pattern_match.group(1)
     if not xx:
@@ -118,9 +112,7 @@ async def gcast(event):
     await kk.edit(f"Done in {done} chats, error in {er} chat(s)")
 
 
-@ultroid_cmd(
-    pattern="gucast ?(.*)",
-)
+@register(outgoing=True, pattern="^.gucast(?: |$)(.*)")
 async def gucast(event):
     xx = event.pattern_match.group(1)
     if not xx:
@@ -141,9 +133,7 @@ async def gucast(event):
     await kk.edit(f"Done in {done} chats, error in {er} chat(s)")
 
 
-@ultroid_cmd(
-    pattern="gkick ?(.*)",
-)
+@register(outgoing=True, pattern="^.goban(?: |$)(.*)")
 async def gokick(e):
     xx = await eor(e, "`Gkicking...`")
     if e.is_private:
@@ -179,9 +169,7 @@ async def gokick(e):
     await xx.edit(f"`Gkicked` [{name}](tg://user?id={userid}) `in {chats} chats.`")
 
 
-@ultroid_cmd(
-    pattern="gomute ?(.*)",
-)
+@register(outgoing=True, pattern="^.gomute(?: |$)(.*)")
 async def _(e):
     xx = await eor(e, "`Gmuting...`")
     if e.is_private:
@@ -220,9 +208,7 @@ async def _(e):
     await xx.edit(f"`Gmuted` [{name}](tg://user?id={userid}) `in {chats} chats.`")
 
 
-@ultroid_cmd(
-    pattern="ungomute ?(.*)",
-)
+@register(outgoing=True, pattern="^.ungomute(?: |$)(.*)")
 async def _(e):
     xx = await eor(e, "`UnGmuting...`")
     if e.is_private:
@@ -257,7 +243,7 @@ async def _(e):
     await xx.edit(f"`Ungmuted` [{name}](tg://user?id={userid}) `in {chats} chats.`")
 
 
-@ultroid_bot.on(events.ChatAction)
+@bot.on(ChatAction)
 async def _(e):
     if e.user_joined or e.added_by:
         user = await e.get_user()
