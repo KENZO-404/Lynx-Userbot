@@ -357,7 +357,7 @@ with bot:
 
 
 async def check_alive():
-    await bot.send_message(BOTLOG_CHATID, "``` ⚡𝗟𝘆𝗻𝘅-𝙐𝙎𝙀𝙍𝘽𝙊𝙏⚡𝗛𝗮𝘀 𝗯𝗲𝗲𝗻 𝗮𝗰𝘁𝗶𝘃𝗲 🐈```")
+    await bot.send_message(BOTLOG_CHATID, "``` ⚡𝗟𝘆𝗻𝘅-𝙐𝙎𝙀𝙍𝘽𝙊𝙏⚡<Beta> Has Been active...```")
     return
 
 with bot:
@@ -385,7 +385,7 @@ from userbot import (
     ALIVE_NAME
 )
 
-# ================= CONSTANT =================
+# ================= LYNXUSER =================
 DEFAULTUSER = str(ALIVE_NAME) if ALIVE_NAME else uname().node
 # ============================================
 
