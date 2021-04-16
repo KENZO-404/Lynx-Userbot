@@ -133,7 +133,7 @@ async def gucast(event):
     await kk.edit(f"Done in {done} chats, error in {er} chat(s)")
 
 
-@register(outgoing=True, pattern="^.goban(?: |$)(.*)")
+@register(outgoing=True, pattern="^.gokick(?: |$)(.*)")
 async def gokick(e):
     xx = await eor(e, "`Gkicking...`")
     if e.is_private:
