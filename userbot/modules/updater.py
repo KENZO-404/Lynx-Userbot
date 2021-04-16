@@ -67,7 +67,7 @@ async def deploy(event, repo, ups_rem, ac_br, txt):
                 f'{txt}\n`Kredensial Heroku tidak valid untuk deploy Lynx-Userbot dyno.`'
             )
             return repo.__del__()
-        await event.edit('#DEPLOY `<Beta>` Branch.\'
+        await event.edit('#DEPLOY `<Beta>` Branch.'
                          '\n⚡𝗟𝘆𝗻𝘅-𝙐𝙎𝙀𝙍𝘽𝙊𝙏⚡ Sedang Dalam Proses, Mohon Menunggu 4-7 Menit`'
                          )
         ups_rem.fetch(ac_br)
@@ -92,7 +92,7 @@ async def deploy(event, repo, ups_rem, ac_br, txt):
             await asyncio.sleep(5)
             return await event.delete()
         else:
-            await event.edit("`Lynx-Userbot Berhasil Di Deploy!\n" "Restarting, Mohon Tunggu Sebentar.....`")
+            await event.edit("`#VICTORY <Beta> Branch. \nLynx-Userbot Berhasil Di Deploy!\n" "Restarting, Mohon Tunggu Sebentar...`")
             await asyncio.sleep(15)
             await event.delete()
 
@@ -120,14 +120,14 @@ async def update(event, repo, ups_rem, ac_br):
     await asyncio.sleep(1)
     await event.edit('**⚡𝗟𝘆𝗻𝘅-𝙐𝙎𝙀𝙍𝘽𝙊𝙏⚡** `Di Restart....`')
     await asyncio.sleep(1)
-    await event.edit('`Mohon Menunggu Beberapa Detik Yang Mulia.`')
+    await event.edit('`Mohon Menunggu Beberapa Detik.`')
     await asyncio.sleep(10)
     await event.delete()
 
     if BOTLOG:
         await event.client.send_message(
             BOTLOG_CHATID, "#BOT \n"
-            "**⚡𝗟𝘆𝗻𝘅-𝙐𝙎𝙀𝙍𝘽𝙊𝙏⚡ Telah Di Perbarui.**")
+            "**⚡𝗟𝘆𝗻𝘅-𝙐𝙎𝙀𝙍𝘽𝙊𝙏⚡ `<Beta>` Telah Di Perbarui.**")
         await asyncio.sleep(100)
         await event.delete()
 
