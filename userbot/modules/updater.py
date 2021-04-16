@@ -54,7 +54,7 @@ async def deploy(event, repo, ups_rem, ac_br, txt):
         if HEROKU_APP_NAME is None:
             await event.edit(
                 '`[HEROKU]: Harap Siapkan Variabel` **HEROKU_APP_NAME** `'
-                ' untuk dapat deploy perubahan terbaru dari ⚡𝗟𝘆𝗻𝘅-𝙐𝙎𝙀𝙍𝘽𝙊𝙏⚡.`'
+                ' Untuk Dapat Deploy Perubahan Terbaru Dari ⚡𝗟𝘆𝗻𝘅-𝙐𝙎𝙀𝙍𝘽𝙊𝙏⚡.`'
             )
             repo.__del__()
             return
@@ -67,8 +67,8 @@ async def deploy(event, repo, ups_rem, ac_br, txt):
                 f'{txt}\n`Kredensial Heroku tidak valid untuk deploy Lynx-Userbot dyno.`'
             )
             return repo.__del__()
-        await event.edit('#DEPLOY `<Beta>` Branch.'
-                         '\n⚡𝗟𝘆𝗻𝘅-𝙐𝙎𝙀𝙍𝘽𝙊𝙏⚡ Sedang Dalam Proses, Mohon Menunggu 4-7 Menit`'
+        await event.edit('#DEPLOY [{ac_br}] Branch.'
+                         '\n⚡𝗟𝘆𝗻𝘅-𝙐𝙎𝙀𝙍𝘽𝙊𝙏⚡`Update In Progress, Please Wait 4-7 Minutes.`'
                          )
         ups_rem.fetch(ac_br)
         repo.git.reset("--hard", "FETCH_HEAD")
@@ -92,8 +92,8 @@ async def deploy(event, repo, ups_rem, ac_br, txt):
             await asyncio.sleep(5)
             return await event.delete()
         else:
-            await event.edit("`#VICTORY <Beta> Branch. \nLynx-Userbot Berhasil Di Deploy!\n" "Restarting, Mohon Tunggu Sebentar...`")
-            await asyncio.sleep(15)
+            await event.edit("#VICTORY [{ac_br}] Branch. \n⚡Lynx-Userbot⚡ Successfully Deployed !\n" "Restarting, Please Wait A Moment...")
+            await asyncio.sleep(20)
             await event.delete()
 
         if BOTLOG:
@@ -116,18 +116,18 @@ async def update(event, repo, ups_rem, ac_br):
     except GitCommandError:
         repo.git.reset("--hard", "FETCH_HEAD")
     await update_requirements()
-    await event.edit('**⚡𝗟𝘆𝗻𝘅-𝙐𝙎𝙀𝙍𝘽𝙊𝙏⚡** `Berhasil Di Update!`')
-    await asyncio.sleep(1)
-    await event.edit('**⚡𝗟𝘆𝗻𝘅-𝙐𝙎𝙀𝙍𝘽𝙊𝙏⚡** `Di Restart....`')
-    await asyncio.sleep(1)
-    await event.edit('`Mohon Menunggu Beberapa Detik.`')
+    await event.edit('**⚡𝗟𝘆𝗻𝘅-𝙐𝙎𝙀𝙍𝘽𝙊𝙏⚡** [{ac_br}] `Berhasil Di Update!`')
+    await asyncio.sleep(5)
+    await event.edit('**⚡𝗟𝘆𝗻𝘅-𝙐𝙎𝙀𝙍𝘽𝙊𝙏⚡** [{ac_br}] `Di Restart....`')
+    await asyncio.sleep(5)
+    await event.edit('`Mohon Menunggu Dalam Beberapa Detik...`')
     await asyncio.sleep(10)
     await event.delete()
 
     if BOTLOG:
         await event.client.send_message(
             BOTLOG_CHATID, "#BOT \n"
-            "**⚡𝗟𝘆𝗻𝘅-𝙐𝙎𝙀𝙍𝘽𝙊𝙏⚡ `<Beta>` Telah Di Perbarui.**")
+            f"**⚡𝗟𝘆𝗻𝘅-𝙐𝙎𝙀𝙍𝘽𝙊𝙏⚡ [{ac_br}] Telah Di Perbarui.**")
         await asyncio.sleep(100)
         await event.delete()
 
@@ -195,7 +195,7 @@ async def upstream(event):
         return repo.__del__()
 
     if conf is None and force_update is False:
-        changelog_str = f'**Pembaruan Untuk ⚡𝗟𝘆𝗻𝘅-𝙐𝙎𝙀𝙍𝘽𝙊𝙏⚡ `<Beta>` :\n\n💻 Pembaruan Data :**\n`{changelog}`'
+        changelog_str = f'**Pembaruan Untuk ⚡𝗟𝘆𝗻𝘅-𝙐𝙎𝙀𝙍𝘽𝙊𝙏⚡ [{ac_br}] :\n\n💻 Pembaruan Data :**\n`{changelog}`'
         if len(changelog_str) > 4096:
             await event.edit("`Changelog Terlalu Besar, Lihat File Untuk Melihatnya.`")
             file = open("output.txt", "w+")
@@ -225,7 +225,7 @@ async def upstream(event):
         await update(event, repo, ups_rem, ac_br)
         await asyncio.sleep(10)
         await event.delete()
-    elif conf == "deploy":
+    elif conf == f"deploy -[{ac_br}]":
         await deploy(event, repo, ups_rem, ac_br, txt)
         await asyncio.sleep(10)
         await event.delete()
@@ -238,6 +238,6 @@ CMD_HELP.update({
     "\n↳ : Untuk Melihat Pembaruan Terbaru ⚡𝗟𝘆𝗻𝘅-𝙐𝙎𝙀𝙍𝘽𝙊𝙏⚡."
     "\n\n⚡𝘾𝙈𝘿⚡: `.update now`"
     "\n↳ : Memperbarui Lynx-Userbot."
-    "\n\n⚡𝘾𝙈𝘿⚡: `.update deploy`"
+    f"\n\n⚡𝘾𝙈𝘿⚡: .update deploy -[{ac_br}]"
     "\n↳ : Memperbarui 𝗟𝘆𝗻𝘅-𝙐𝙎𝙀𝙍𝘽𝙊𝙏 Dengan Cara Men-Deploy Ulang Lewat Heroku Secara Otomatis."
 })
