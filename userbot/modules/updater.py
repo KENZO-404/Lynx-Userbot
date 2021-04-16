@@ -238,6 +238,6 @@ CMD_HELP.update({
     "\n↳ : Untuk Melihat Pembaruan Terbaru ⚡𝗟𝘆𝗻𝘅-𝙐𝙎𝙀𝙍𝘽𝙊𝙏⚡."
     "\n\n⚡𝘾𝙈𝘿⚡: `.update now`"
     "\n↳ : Memperbarui Lynx-Userbot."
-    f"\n\n⚡𝘾𝙈𝘿⚡: .update deploy -[{ac_br}]"
+    "\n\n⚡𝘾𝙈𝘿⚡: .update deploy -Beta / -Lynx-Userbot"
     "\n↳ : Memperbarui 𝗟𝘆𝗻𝘅-𝙐𝙎𝙀𝙍𝘽𝙊𝙏 Dengan Cara Men-Deploy Ulang Lewat Heroku Secara Otomatis."
 })
