@@ -65,7 +65,6 @@ PyGithub
 bs4
 covid>=2.4.0
 base
-pip>=21.0.1
 setuptools>=56.0.0
 selenium>=3.141.0
 python-dateutil
