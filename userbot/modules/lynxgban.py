@@ -5,6 +5,8 @@
 # PLease read the GNU Affero General Public License in
 # <https://www.github.com/TeamUltroid/Ultroid/blob/main/LICENSE/>.
 
+from telethon.tl.types import MessageEntityMentionName
+from telethon.tl.functions.contacts import BlockRequest, UnblockRequest
 from userbot import CMD_HELP, bot
 from telethon import events
 
