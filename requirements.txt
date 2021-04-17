@@ -100,3 +100,4 @@ wordcloud
 opencv-python
 faker
 pendulum
+motor
